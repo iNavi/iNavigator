@@ -29,7 +29,6 @@ The default Classifier use Decision Tree J48 algorithm, it has pretty good perfo
 into the constructor of HumanActivityRecognizer.
 
 ## Reference
-- https://github.com/tensorflow/tensorflow
 - https://github.com/yhcvb/HARAndroid
 - https://github.com/googlemaps/android-maps-utils
 
