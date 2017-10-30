@@ -1,6 +1,12 @@
 # iNavigator
 A recommender system based on Google Map and Activity Recognition
 
+
+## Google Maps Android API utility library
+
+This open-source library contains utilities that are useful for a wide
+range of applications using the [Google Maps Android API][android-site].
+
 ## HARLib
 The process of HARLib as below diagram:
 ```
