@@ -2,9 +2,7 @@
 A recommender system based on Google Map and Activity Recognition
 
 ## HARLib
-
-### The Process of HAR
-The process of HAR as below diagram:
+The process of HARLib as below diagram:
 ```
           .------------.        .--------------.        .------------.
   Sensor  |            |        |              |        |            |activity
