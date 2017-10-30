@@ -29,6 +29,7 @@ The default Classifier use Decision Tree J48 algorithm, it has pretty good perfo
 into the constructor of HumanActivityRecognizer.
 
 ## Reference
-- http://www.cis.fordham.edu/wisdm/
-- http://www.cs.waikato.ac.nz/ml/weka/
-- https://github.com/Shookit/android-ml-weka
+- https://github.com/tensorflow/tensorflow
+- https://github.com/yhcvb/HARAndroid
+- https://github.com/googlemaps/android-maps-utils
+
