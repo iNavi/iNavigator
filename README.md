@@ -21,3 +21,8 @@ This process will extract features from the array of RawData, and then trans the
 Classifier will process the Instance, then give an classify result. The Classifier will import the mode file on initial phase, which was trained and created on Weka desktop version.
 The default Classifier use Decision Tree J48 algorithm, it has pretty good performance. If you need to try another algorithm, you can pass the path of your classifier model file as parameter
 into the constructor of HumanActivityRecognizer.
+
+## Reference
+- http://www.cis.fordham.edu/wisdm/
+- http://www.cs.waikato.ac.nz/ml/weka/
+- https://github.com/Shookit/android-ml-weka
