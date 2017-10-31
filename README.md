@@ -28,7 +28,11 @@ Classifier will process the Instance, then give an classify result. The Classifi
 The default Classifier use Decision Tree J48 algorithm, it has pretty good performance. If you need to try another algorithm, you can pass the path of your classifier model file as parameter
 into the constructor of HumanActivityRecognizer.
 
+## Android GeoJSON
+A complete GeoJSON implementation for Android.
+
 ## Reference
 - https://github.com/yhcvb/HARAndroid
 - https://github.com/googlemaps/android-maps-utils
+- https://github.com/cocoahero/android-geojson
 
