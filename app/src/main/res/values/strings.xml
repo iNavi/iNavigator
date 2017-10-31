@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">iNavigator</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name ="hint_har_stop">Stop HAR</string>
+    <string name ="alert_dialog_message_open_gps">Need Enable GPS Location</string>
+    <string name ="alert_dialog_title_open_gps">Enable GPS Location</string>
+    <string name ="alert_dialog_postive">Yes</string>
+    <string name ="alert_dialog_negative">No</string>
+
+    <string name ="notification_title">HAR</string>
+    <string name ="notification_text">HAR Running</string>
+</resources>

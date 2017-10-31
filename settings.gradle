@@ -1,3 +1,4 @@
 include ':WekaAndroid'
 include ':HARLib'
-include ':HARDemo'
+
+include ':app'
