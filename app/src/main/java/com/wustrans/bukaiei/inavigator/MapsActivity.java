@@ -79,12 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setMapCenter(30.75363117, 103.92886356, DEFAULT_ZOOM);
         }
         mMarkerActivityMap = new HashMap<>();
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+ 
         EventBus.getDefault().register(this);
 
         if(mIsHarRunning) {
