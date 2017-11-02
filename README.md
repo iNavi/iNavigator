@@ -18,7 +18,7 @@ range of applications using the Google Maps Android API.
 
 ## HARLib
 
-A Human Activity Recognition Library and Demo on Android Platform.
+A Human Activity Recognition Library on Android Platform.
 
 ## Android GeoJSON
 A complete GeoJSON implementation for Android.
