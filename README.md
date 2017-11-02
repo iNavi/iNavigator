@@ -1,6 +1,17 @@
 # iNavigator
 A recommender system based on Google Map and Activity Recognition
 
+The process of iNavigator system as below diagram:
+```
+          .------------.               .------------.                            .------------.            .------------.
+  Sensor  |            |               |            |activity                    |            |            |            |
+  Event   | HARLib     |Processed Data | AR System  |(walking, sitting...etc)    |   Google   |            |  GeoJSON   |
+ -------> |            |-------------->|            |--------------------------> |    Map     |<---------> |            |
+          |            |               |            |                            |            |            |            |
+          '------------'               '------------'                            '------------'            '------------'
+
+
+```
 
 ## Google Maps Android API utility library
 
@@ -8,15 +19,7 @@ This open-source library contains utilities that are useful for a wide
 range of applications using the Google Maps Android API.
 
 ## HARLib
-The process of HARLib as below diagram:
-```
-          .------------.        .--------------.        .------------.
-  Sensor  |            |        |              |        |            |activity
-  Event   | SensorData |RawData | Data         |Instance| Classifier |(walking, sitting...etc)
- -------> | Collector  |------->| Preprocessor |------->|            |------->
-          |            |        |              |        |            |
-          '------------'        '--------------'        '------------'
-```
+
 #### Sensor Data Collect
 Collect a period of time of accelerometer sensor data on android phone. Then input an array of RawData into DataPreprocessor.
 
