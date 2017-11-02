@@ -4,8 +4,8 @@ A recommender system based on Google Map and Activity Recognition
 The process of iNavigator system as below diagram:
 ```
           .----------.               .------------.                           .------------.        .------------.
-  Sensor  |          |               |            |activity                   | Google Map |        |            |
-  Event   | HARLib   |Processed Data | AR System  |(walking, sitting...etc)   |   and      |        |  GeoJSON   |
+          |          |               |            |activity                   | Google Map |        |            |
+  Sensor  | HARLib   |Processed Data | AR System  |(walking, sitting...etc)   |   and      |        |  GeoJSON   |
  -------> |          |-------------->|            |-------------------------> |  Google    |<-----> |            |
           |          |               |            |                           |  Service   |        |            |
           '----------'               '------------'                           '------------'        '------------'
