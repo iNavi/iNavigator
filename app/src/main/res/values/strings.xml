@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">iNavigator</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">iNavigator</string>
 
     <string name ="hint_har_stop">Stop HAR</string>
     <string name ="alert_dialog_message_open_gps">Need Enable GPS Location</string>

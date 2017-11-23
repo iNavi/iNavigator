@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="position">
+        <enum name="left_top" value="0" />
+        <enum name="right_top" value="1" />
+        <enum name="left_bottom" value="2" />
+        <enum name="right_bottom" value="3" />
+    </attr>
+    <attr name="rotateSwitch" format="boolean"/>
+    <attr name="radius" format="dimension" />
+
+    <declare-styleable name="SatelliteMenu">
+        <attr name="position" />
+        <attr name="rotateSwitch" />
+        <attr name="radius" />
+    </declare-styleable>
+</resources>

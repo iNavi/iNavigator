@@ -1,14 +1,20 @@
 package com.wustrans.bukaiei.inavigator;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,44 +22,42 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.wustrans.bukaiei.inavigator.util.LogUtil;
-
+import com.rockcode.har.HumanActivity;
 import com.wustrans.bukaiei.inavigator.base.LocationCollector;
 import com.wustrans.bukaiei.inavigator.base.UserActivityInfo;
+import com.wustrans.bukaiei.inavigator.util.LogUtil;
 import com.wustrans.bukaiei.inavigator.util.StrUtil;
-
-import java.util.HashMap;
-import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         , GoogleMap.OnMarkerClickListener
-        , GoogleMap.OnMapClickListener {
+        , GoogleMap.OnMapClickListener
+        , GoogleMap.OnMyLocationButtonClickListener {
 
     private GoogleMap mMap;
 
     private boolean mIsHarRunning = false;
 
-    HashMap<String, UserActivityInfo> mMarkerActivityMap;
-
-    private static final float DEFAULT_ZOOM = 19;
+    private static final float DEFAULT_ZOOM = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -66,36 +70,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("debug", "permission granted");
+            mMap = googleMap;
 
-   //     mMap.setMapStyle();
-        mMap.setOnMapClickListener(this);
-        mMap.setOnMarkerClickListener(this);
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mMap.setOnMapClickListener(this);
+            mMap.setOnMarkerClickListener(this);
 
-        Location location = LocationCollector.getLastLocation(this.getApplicationContext());
-        if (location != null) {
-            setMapCenter(location, DEFAULT_ZOOM);
+         //   mMap.setInfoWindowAdapter(mInfoWindowAdapter);
+            Location location = LocationCollector.getLastLocation(this.getApplicationContext());
+            if (location != null) {
+                setMapCenter(location, DEFAULT_ZOOM);
+            } else {
+                setMapCenter(30.75363117, 103.92886356, DEFAULT_ZOOM);
+            }
         } else {
-            setMapCenter(30.75363117, 103.92886356, DEFAULT_ZOOM);
+            Log.d("debug", "permission error");
+            return;
         }
-        mMarkerActivityMap = new HashMap<>();
- 
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         EventBus.getDefault().register(this);
 
-        if(mIsHarRunning) {
-            mIsHarRunning = false;
-            Toast.makeText(getApplicationContext(), getString(R.string.hint_har_stop),
-                    Toast.LENGTH_SHORT).show();
-            HarService.stopHar(getApplicationContext());
-        } else {
-            if(!com.wustrans.bukaiei.inavigator.base.LocationCollector.isGPSLocationOpen(getApplicationContext())) {
+        if(!mIsHarRunning) {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if(!gps) {
                 showAlertDialogToOpenGPS();
             } else {
                 mIsHarRunning = true;
                 HarService.startHar(getApplicationContext());
             }
         }
-        setHarStatusView(mIsHarRunning);
     }
 
     @Override
@@ -109,25 +121,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         HarService.startService(getApplicationContext());
         super.onResume();
     }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
     @Override
     protected void onDestroy() {
         if(!mIsHarRunning){
             HarService.stopService(getApplicationContext());
         }
+
         super.onDestroy();
-    }
-
-    private void setHarStatusView(boolean isHarRunning) {
-
-        HarService.getHarRunningState(getApplicationContext());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleIsHarRunning(HarService.HarRunningStateEvent event) {
-        LogUtil.info("MainActivity - handleIsHarRunning()");
-        mIsHarRunning = event.isRunning;
-        setHarStatusView(mIsHarRunning);
     }
 
     private void showAlertDialogToOpenGPS() {
@@ -146,19 +150,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.setNegativeButton(getString(R.string.alert_dialog_negative), null);
         builder.create().show();
     }
+
     public void setMapCenter(Location location, float zoom) {
         setMapCenter(location.getLatitude(), location.getLongitude(), zoom);
     }
 
     public void setMapCenter(double latitude, double longitude, float zoom) {
-        LatLng pt1 = new LatLng(latitude, longitude);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pt1));
-
+        LatLng newLocation = new LatLng(latitude, longitude);
+        CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngZoom(newLocation,zoom);
+        mMap.moveCamera(mCameraUpdate);
     }
 
     public void setMapCenter(double latitude, double longitude) {
-
+        LatLng newLocation = new LatLng(latitude, longitude);
+        CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLng(newLocation);
+        mMap.moveCamera(mCameraUpdate);
     }
 
     public void drawMarkers(List<UserActivityInfo> harList) {
@@ -173,60 +179,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // add marker to map
         int resId = getResId(data.mActivity);
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(resId);
-
         MarkerOptions markerOption = new MarkerOptions();
+     //   markerOption.setGps(true);
         markerOption.position(point);
         markerOption.icon(bitmap);
         markerOption.title(data.mActivity + "\n" + StrUtil.strTime(data.mGpsTime, "yyyy-MM-dd HH:mm:ss"));
-
         mMap.addMarker(markerOption);
-        mMarkerActivityMap.put(markerOption.getTitle(), data);
+      //  mMarkerActivityMap.put(markerOption.getTitle(), data);
     }
 
     public int getResId(String activity) {
         switch(activity) {
-            case UserActivityInfo.ACTIVITY_NOLABEL:
+            case HumanActivity.ACTIVITY_NOLABEL:
                 return R.drawable.dot_grey_24;
-            case UserActivityInfo.ACTIVITY_WALKING:
+            case HumanActivity.ACTIVITY_WALKING:
                 return R.drawable.dot_green_24;
-            case UserActivityInfo.ACTIVITY_JOGGING:
+            case HumanActivity.ACTIVITY_JOGGING:
                 return R.drawable.dot_cyan_24;
-            case UserActivityInfo.ACTIVITY_CYCLING:
+            case HumanActivity.ACTIVITY_CYCLING:
                 return R.drawable.dot_orange_24;
-            case UserActivityInfo.ACTIVITY_STAIRS:
+            case HumanActivity.ACTIVITY_STAIRS:
                 return R.drawable.dot_yellow_24;
-            case UserActivityInfo.ACTIVITY_STANDING:
+            case HumanActivity.ACTIVITY_STANDING:
                 return R.drawable.dot_blue_24;
-            case UserActivityInfo.ACTIVITY_SITTING:
+            case HumanActivity.ACTIVITY_SITTING:
                 return R.drawable.dot_red_24;
             default:
                 return R.drawable.dot_grey_24;
         }
-    }
-
-    public void clearOverlay() {
-        LogUtil.info("Clear All The Overlay On MAP");
-        mMap.clear();
-        mMarkerActivityMap.clear();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleHarQueryResult(HarService.HarDataQueryResultEvent event) {
-        LogUtil.info("MapFragment - handleHarQueryResult");
-        clearOverlay();
-        List<UserActivityInfo> harDataList = event.harDataList;
-        drawMarkers(harDataList);
-        UserActivityInfo ha0 = harDataList.get(harDataList.size()-1);
-        setMapCenter(ha0.mLatitude, ha0.mLongitude);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleGetRecentHarData(HarService.HarDataRecentResultEvent event) {
-        LogUtil.info("MapFragment - handleGetRecentHarData()");
-        List<UserActivityInfo> harDataList =  event.harDataList;
-        drawMarkers(harDataList);
-        UserActivityInfo ha0 = harDataList.get(harDataList.size()-1);
-        setMapCenter(ha0.mLatitude, ha0.mLongitude);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -245,5 +225,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapClick(LatLng latLng) {
 
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
     }
 }

@@ -1,12 +1,16 @@
 package com.wustrans.bukaiei.inavigator.base;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.wustrans.bukaiei.inavigator.util.LogUtil;
 import com.wustrans.bukaiei.inavigator.util.StrUtil;
@@ -27,7 +31,7 @@ public class LocationCollector {
 		mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		mLocation = getLastKnownLocation(mLocationManager);
 	}
-	
+
 	public Location getLocation() {
 		if (mLocation == null) {
 			mLocation = getLastKnownLocation(mLocationManager);
@@ -52,7 +56,7 @@ public class LocationCollector {
 		}
 		return lastLocation;
 	}
-	
+
 	public void start() {
 		if (!mIsRunning) {
 			mIsRunning = true;
