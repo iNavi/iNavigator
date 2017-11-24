@@ -20,9 +20,6 @@ range of applications using the Google Maps Android API.
 
 A Human Activity Recognition Library on Android Platform.
 
-## Android GeoJSON
-A complete GeoJSON implementation for Android.
-
 ## Reference
 - https://github.com/yhcvb/HARAndroid
 - https://github.com/googlemaps/android-maps-utils
