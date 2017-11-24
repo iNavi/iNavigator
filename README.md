@@ -26,5 +26,4 @@ A complete GeoJSON implementation for Android.
 ## Reference
 - https://github.com/yhcvb/HARAndroid
 - https://github.com/googlemaps/android-maps-utils
-- https://github.com/cocoahero/android-geojson
 
